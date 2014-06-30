@@ -67,7 +67,7 @@ public class NoLoggingInClasses extends AbstractJavaRule {
 
       while(parent != null){
 
-        //  figure out if any of the parent classes extend BaseOperation
+        //  figure out if any of the parent classes extend the targets
         if(parent instanceof ASTClassOrInterfaceDeclaration){
           ASTClassOrInterfaceDeclaration declaration = (ASTClassOrInterfaceDeclaration) parent;
           for (String mrParentClass : getFromContext(data)) {
@@ -77,7 +77,7 @@ public class NoLoggingInClasses extends AbstractJavaRule {
           }
         }
 
-        //  let it slide if it's in a constructor
+        //  let it slide if it's in a constructor (called infrequently)
         if(parent instanceof ASTConstructorDeclaration){
            inConstructor = true;
         }

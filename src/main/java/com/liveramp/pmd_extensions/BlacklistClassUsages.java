@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 /**
  * Prevent a class from being instantiated or imported.  See example usage in example_ruleset.xml
  *
- * TODO prevent it from being used statically fully qualified
+ * TODO prevent target from being used statically fully qualified
  */
 public class BlacklistClassUsages extends AbstractJavaRule {
   private static final String LIST_NAME = "BlacklistedClasses";
