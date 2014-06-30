@@ -27,8 +27,8 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>artifactory.liveramp.net</id>
-      <name>artifactory.liveramp.net-snapshots</name>
+      <id>repository.liveramp.com</id>
+      <name>repository.liveramp.com-snapshots</name>
       <url>http://repository.liveramp.com/artifactory/libs-snapshot-local</url>
     </snapshotRepository>
     <repository>
