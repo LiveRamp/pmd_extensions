@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<ruleset name="LiveRampPmdRuleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+    Example set of configured PMD rules
+  </description>
+
+  <rule name="BlacklistedClassUsage"
+        message="Blacklisted class found!"
+        class="com.liveramp.pmd_extensions.BlacklistClassUsages">
+    <description>
+      Black-list classes which should not be used in production.
+    </description>
+    <priority>1</priority>
+    <properties>
+      <property name="BlacklistedClasses" value="
+      cascading.operation.Debug
+      "/>
+    </properties>
+  </rule>
+
+  <rule name="BlacklistedMethods"
+        message="Blacklisted method call found!"
+        class="com.liveramp.pmd_extensions.BlacklistMethods">
+    <description>
+      Black-list easily-misused methods which should be accessed via helper methods instead.
+    </description>
+    <priority>1</priority>
+    <properties>
+      <property name="BlacklistedMethods" value="
+      java.lang.String:getBytes:0,
+      org.apache.hadoop.fs.FileSystem:delete,
+      java.nio.ByteBuffer:array,
+      org.apache.hadoop.io.BytesWritable:get,
+      org.apache.hadoop.io.BytesWritable:getBytes,
+      java.lang.Throwable:printStackTrace:0
+      "/>
+    </properties>
+  </rule>
+
+  <rule name="NoLoggingInCascadingFlows"
+        message="No logging in Cascading Flows"
+        class="com.liveramp.pmd_extensions.NoLoggingInClasses">
+    <description>
+      Logging in Cascading operations quickly fills up disk space when reading billion of records.
+      Make an attempt at banning it if it happens directly in the operation.
+    </description>
+    <priority>1</priority>
+    <properties>
+      <property name="ClassesToInspect" value="
+      cascading.operation.BaseOperation
+      "/>
+    </properties>
+  </rule>
+
+</ruleset>
