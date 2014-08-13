@@ -72,7 +72,6 @@ public class PmdHelper {
         ASTClassOrInterfaceDeclaration declaration = (ASTClassOrInterfaceDeclaration)parent;
 
         for (String mrParentClass : parentClasses) {
-          System.out.println("comparing "+declaration.getType()+" "+mrParentClass);
           if (PmdHelper.isSubclass(declaration, mrParentClass)) {
             inClass = true;
           }
