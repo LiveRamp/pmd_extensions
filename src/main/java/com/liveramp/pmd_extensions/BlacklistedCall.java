@@ -53,4 +53,16 @@ public class BlacklistedCall {
   public String getFullStaticImage(){
     return staticFull;
   }
+
+  @Override
+  public String toString() {
+    return "BlacklistedCall{" +
+        "ruleClass='" + ruleClass + '\'' +
+        ", ruleClassName='" + ruleClassName + '\'' +
+        ", ruleMethodName='" + ruleMethodName + '\'' +
+        ", argumentCount=" + argumentCount +
+        ", staticImported='" + staticImported + '\'' +
+        ", staticFull='" + staticFull + '\'' +
+        '}';
+  }
 }

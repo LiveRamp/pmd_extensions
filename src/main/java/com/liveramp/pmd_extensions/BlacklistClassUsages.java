@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  * TODO prevent target from being used statically fully qualified
  */
 public class BlacklistClassUsages extends AbstractJavaRule {
-  private static final String LIST_NAME = "BlacklistedClasses";
+  private static final String LIST_NAME = "BlacklistClassUsages.BlacklistedClasses";
 
   public BlacklistClassUsages(){
     definePropertyDescriptor(new StringProperty(LIST_NAME, "List of classes to blacklist", "", 0));
@@ -30,6 +30,8 @@ public class BlacklistClassUsages extends AbstractJavaRule {
       blacklistedClasses.add(className.trim());
     }
     ctx.setAttribute(LIST_NAME, blacklistedClasses);
+
+    super.start(ctx);
   }
 
   private static List<String> getFromContext(Object data){
@@ -49,7 +51,8 @@ public class BlacklistClassUsages extends AbstractJavaRule {
         addViolation(data, node);
       }
     }
-    return data;
+
+    return super.visit(node, data);
   }
 
   /**
@@ -59,7 +62,8 @@ public class BlacklistClassUsages extends AbstractJavaRule {
   public Object visit(ASTAllocationExpression node, Object data) {
 
     if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
-      return data;
+      return super.visit(node, data);
+
     }
 
     for (String blockedClass : getFromContext(data)) {
@@ -68,6 +72,6 @@ public class BlacklistClassUsages extends AbstractJavaRule {
       }
     }
 
-    return data;
+    return super.visit(node, data);
   }
 }

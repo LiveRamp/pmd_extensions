@@ -7,8 +7,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
@@ -17,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  * See example configuration in example_ruleset.xml
  */
 public class NoLoggingInClasses extends AbstractJavaRule {
-  private static final String CLASS_LIST = "ClassesToInspect";
+  private static final String CLASS_LIST = "NoLoggingInClasses.ClassesToInspect";
 
   //  TODO figure out if we can catch a Logger in here...
   private static final Set<String> LOG_IMAGES = Sets.newHashSet(
@@ -39,6 +37,8 @@ public class NoLoggingInClasses extends AbstractJavaRule {
       blacklistedClasses.add(className.trim());
     }
     ctx.setAttribute(CLASS_LIST, blacklistedClasses);
+
+    super.start(ctx);
   }
 
   private static List<String> getFromContext(Object data){
@@ -49,47 +49,22 @@ public class NoLoggingInClasses extends AbstractJavaRule {
   @Override
   public Object visit(ASTPrimaryPrefix node, Object data) {
     if (node.jjtGetNumChildren() == 0) {
-      return data;
+      return super.visit(node, data);
     }
 
     Node node1 = node.jjtGetChild(0);
     String image = node1.getImage();
 
     if (image == null) {
-      return data;
+      return super.visit(node, data);
     }
 
     if (LOG_IMAGES.contains(image)) {
-      Node parent = node.jjtGetParent();
-
-      boolean inClass = false;
-      boolean inConstructor = false;
-
-      while(parent != null){
-
-        //  figure out if any of the parent classes extend the targets
-        if(parent instanceof ASTClassOrInterfaceDeclaration){
-          ASTClassOrInterfaceDeclaration declaration = (ASTClassOrInterfaceDeclaration) parent;
-          for (String mrParentClass : getFromContext(data)) {
-            if(PmdHelper.isSubclass(declaration, mrParentClass)){
-              inClass = true;
-            }
-          }
-        }
-
-        //  let it slide if it's in a constructor (called infrequently)
-        if(parent instanceof ASTConstructorDeclaration){
-           inConstructor = true;
-        }
-
-        parent = parent.jjtGetParent();
-      }
-
-      if(inClass && !inConstructor){
-        addViolation(data, node);
-      }
+      List<String> relevantClasses = getFromContext(data);
+      PmdHelper.checkParentClasses(node, data, relevantClasses, node.jjtGetParent(), this);
     }
 
-    return data;
+    return super.visit(node, data);
   }
+
 }
