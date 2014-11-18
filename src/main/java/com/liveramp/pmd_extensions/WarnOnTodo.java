@@ -3,6 +3,7 @@ package com.liveramp.pmd_extensions;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.comments.AbstractCommentRule;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
@@ -11,9 +12,11 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 public class WarnOnTodo extends AbstractCommentRule {
   public static final String TODO = "todo";
   public static final IntegerProperty MAX_TODOS = new IntegerProperty("maxTodos", "Maximum number of Todos", 1, 100, 10, 2.0f);
+  public static final BooleanProperty REPORT_INDIVIDUALLY = new BooleanProperty("reportIndividually", "Set to true if each violation should be marked", false, 2.0f);
 
   public WarnOnTodo() {
-    
+    definePropertyDescriptor(MAX_TODOS);
+    definePropertyDescriptor(REPORT_INDIVIDUALLY);
   }
   
   @Override
@@ -21,7 +24,9 @@ public class WarnOnTodo extends AbstractCommentRule {
     int numTodos = 0;
     for (Comment comment : unit.getComments()) {
       if (comment.getImage().toLowerCase().contains(TODO)) {
-        addViolationWithMessage(data, unit, ": TODO present", comment.getBeginLine(), comment.getEndLine());
+        if (getProperty(REPORT_INDIVIDUALLY)) {
+          addViolationWithMessage(data, unit, ": TODO present", comment.getBeginLine(), comment.getEndLine());
+        }
         numTodos++;
       };
     }
