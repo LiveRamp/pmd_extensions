@@ -23,16 +23,17 @@ public class WarnOnTodo extends AbstractCommentRule {
   public Object visit(ASTCompilationUnit unit, Object data) {
     int numTodos = 0;
     for (Comment comment : unit.getComments()) {
-      if (comment.getImage().toLowerCase().contains(TODO)) {
+      String commentString = comment.getImage();
+      if (commentString.toLowerCase().contains(TODO)) {
         if (getProperty(REPORT_INDIVIDUALLY)) {
-          addViolationWithMessage(data, unit, ": TODO present", comment.getBeginLine(), comment.getEndLine());
+          addViolationWithMessage(data, unit, "Fix or remove TODO: " + commentString, comment.getBeginLine(), comment.getEndLine());
         }
         numTodos++;
       };
     }
 
     if (numTodos > getProperty(MAX_TODOS)) {
-      addViolationWithMessage(data, unit, ": Too many TODOs");
+      addViolationWithMessage(data, unit, "Too many TODOs. Fix previous ones before adding more.");
     }
 
     return super.visit(unit, data);
