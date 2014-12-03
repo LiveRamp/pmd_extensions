@@ -10,14 +10,17 @@ public class BlacklistedCall {
   private final String staticImported;
   private final String staticFull;
 
-  public BlacklistedCall(String ruleClass, String ruleMethodName) {
-    this(ruleClass, ruleMethodName, null);
+  private final String alternativeMethod;
+
+  public BlacklistedCall(String ruleClass, String ruleMethodName, String alternativeMethod) {
+    this(ruleClass, ruleMethodName, null, alternativeMethod);
   }
 
-  public BlacklistedCall(String ruleClass, String ruleMethodName, Integer argumentCount) {
+  public BlacklistedCall(String ruleClass, String ruleMethodName, Integer argumentCount, String alternativeMethod) {
     this.ruleClass = ruleClass;
     this.ruleMethodName = ruleMethodName;
     this.argumentCount  = argumentCount;
+    this.alternativeMethod = alternativeMethod;
 
     String[] parts = ruleClass.split("\\.");
     if(parts.length < 1){
@@ -54,6 +57,10 @@ public class BlacklistedCall {
     return staticFull;
   }
 
+  public String getAlternativeMethod() {
+    return alternativeMethod;
+  }
+
   @Override
   public String toString() {
     return "BlacklistedCall{" +
@@ -63,6 +70,7 @@ public class BlacklistedCall {
         ", argumentCount=" + argumentCount +
         ", staticImported='" + staticImported + '\'' +
         ", staticFull='" + staticFull + '\'' +
+        ", alternativeMethod='" + getAlternativeMethod() + '\'' +
         '}';
   }
 }
