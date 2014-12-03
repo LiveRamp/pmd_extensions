@@ -1,5 +1,6 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -32,7 +33,7 @@ public class BlacklistMethodHelper {
               if (argumentCount == null || argumentCount == qualifier.getArgumentCount()) {
 
                 if(affectedClasses.isEmpty()){
-                  rule.addViolation(data, occ.getLocation());
+                  markViolation(rule, data, occ.getLocation(), call);
                 }else{
                   PmdHelper.checkParentClasses(node, data, affectedClasses, node.jjtGetParent(), rule);
                 }
@@ -44,12 +45,16 @@ public class BlacklistMethodHelper {
                 && qualifier.getLocation() != null
                 && !ASTName.class.equals(qualifier.getLocation().getClass())
                 && qualifier.getImage().equals(ruleMethodName)) {
-              rule.addViolation(data, occ.getLocation());
+              markViolation(rule, data, occ.getLocation(), call);
             }
           }
         }
       }
     }
+  }
+
+  private static void markViolation(AbstractJavaRule rule, Object data, Node location, BlacklistedCall call) {
+    rule.addViolationWithMessage(data, location, "Suggested Alternative: " + call.getAlternativeMethod());
   }
 
   public static void setContext(String methodProp, String classProp, RuleContext ctx, AbstractJavaRule rule) {
@@ -77,14 +82,20 @@ public class BlacklistMethodHelper {
   }
 
   private static BlacklistedCall parseRef(String s){
-    String[] parts = s.split(":");
-    if(parts.length == 2){
-      return new BlacklistedCall(parts[0], parts[1]);
+    String[] origAlt = s.split(";");
+
+    if (origAlt.length != 2) {
+      throw new RuntimeException("Blacklisting " + s + ": Must supply alternative");
     }
-    if(parts.length == 3){
-      return new BlacklistedCall(parts[0], parts[1], Integer.parseInt(parts[2]));
+
+    String[] parts = origAlt[0].split(":");
+    if (parts.length == 2){
+      return new BlacklistedCall(parts[0], parts[1], origAlt[1]);
     }
-    throw new RuntimeException("Cannot parse method reference: "+s+"!");
+    if (parts.length == 3){
+      return new BlacklistedCall(parts[0], parts[1], Integer.parseInt(parts[2]), origAlt[1]);
+    }
+    throw new RuntimeException("Cannot parse method reference: "+ origAlt[0] +". Parts: " + Arrays.toString(parts));
   }
 
   public static boolean checkStaticMethods(ASTPrimaryPrefix node, Object data, List<BlacklistedCall> blockedCalls, List<String> affectedClasses, AbstractJavaRule rule) {
@@ -105,10 +116,9 @@ public class BlacklistMethodHelper {
         if (PmdHelper.isSubclass(tn, blacklistedCall.getRuleClass())) {
           if (image.equals(blacklistedCall.getImportedStaticImage())
               || image.equals(blacklistedCall.getFullStaticImage())) {
-            rule.addViolation(data, node);
-
+            markViolation(rule, data, node, blacklistedCall);
             if(affectedClasses.isEmpty()){
-              rule.addViolation(data, node);
+              markViolation(rule, data, node, blacklistedCall);
             }else{
               PmdHelper.checkParentClasses(node, data, affectedClasses, node.jjtGetParent(), rule);
             }
