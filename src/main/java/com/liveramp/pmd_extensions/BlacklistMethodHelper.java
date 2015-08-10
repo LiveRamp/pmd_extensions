@@ -35,7 +35,7 @@ public class BlacklistMethodHelper {
                 if(affectedClasses.isEmpty()){
                   markViolation(rule, data, occ.getLocation(), call);
                 }else{
-                  PmdHelper.checkParentClasses(node, data, affectedClasses, node.jjtGetParent(), rule);
+                  PmdHelper.checkParentClasses(node, data, affectedClasses, occ.getLocation(), rule);
                 }
 
               }
