@@ -34,6 +34,7 @@ public class BlacklistMethods extends AbstractJavaRule {
     super.start(ctx);
   }
 
+  @Override
   public Object visit(ASTVariableDeclaratorId node, Object data) {
     BlacklistMethodHelper.checkForMethods(node, data,
         BlacklistMethodHelper.getCallsFromContext(data, LIST_NAME),

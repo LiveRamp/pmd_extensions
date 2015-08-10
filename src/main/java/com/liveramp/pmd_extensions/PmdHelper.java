@@ -27,7 +27,8 @@ public class PmdHelper {
 
     Class type = n.getType();
     if (type == null) {
-      return simpleName(clazz).equals(((Node)n).getImage()) || clazz.equals(((Node)n).getImage());
+      String image = ((Node)n).getImage();
+      return simpleName(clazz).equals(image) || clazz.equals(image);
     }
 
     if (type.getName().equals(clazz)) {
