@@ -57,7 +57,10 @@ public class BlacklistMethodHelper {
   }
 
   private static void markViolation(AbstractJavaRule rule, Object data, Node location, BlacklistedCall call) {
-    rule.addViolationWithMessage(data, location, "Suggested Alternative: " + call.getAlternativeMethod());
+    rule.addViolationWithMessage(
+        data,
+        location,
+        rule.getMessage() + " Suggested alternative: " + call.getAlternativeMethod());
   }
 
   public static void setContext(String methodProp, String classProp, RuleContext ctx, AbstractJavaRule rule) {
