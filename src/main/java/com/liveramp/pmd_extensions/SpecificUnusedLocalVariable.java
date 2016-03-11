@@ -9,8 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Mostly copied from UnusedLocalVariableRule
@@ -65,7 +66,8 @@ public class SpecificUnusedLocalVariable extends AbstractJavaRule {
 
   private boolean actuallyUsed(List<NameOccurrence> usages) {
     for (NameOccurrence occ : usages) {
-      if (occ.isOnLeftHandSide()) {
+      JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
+      if (jocc.isOnLeftHandSide()) {
         continue;
       } else {
         return true;
