@@ -7,7 +7,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import org.apache.commons.lang3.StringUtils;
 
 public class BlacklistedStringLiterals extends AbstractJavaRule {
   private static final String LIST_NAME = "BlacklistedStringLiterals.BlacklistedLiterals";
@@ -43,10 +42,13 @@ public class BlacklistedStringLiterals extends AbstractJavaRule {
     if(node.isStringLiteral()){
       String img = node.getImage();
 
-      for (String literal : getFromContext(data)) {
-        String imgStr = StringUtils.substring(img, 1, -1);
-        if(imgStr.equals(literal)){
-          addViolation(data, node);
+      if (img.length() > 2) {
+        String imgStr = img.substring(1, img.length() - 1);
+
+        for (String literal : getFromContext(data)) {
+          if(imgStr.equals(literal)){
+            addViolation(data, node);
+          }
         }
       }
     }
