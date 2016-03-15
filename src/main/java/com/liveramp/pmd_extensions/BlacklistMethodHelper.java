@@ -10,8 +10,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class BlacklistMethodHelper {
 
@@ -22,7 +23,9 @@ public class BlacklistMethodHelper {
       if (PmdHelper.isSubclass(node, ruleClass)) {
         boolean isArray = node.isArray();
         for (NameOccurrence occ : node.getUsages()) {
-          NameOccurrence qualifier = occ.getNameForWhichThisIsAQualifier();
+          JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
+          NameOccurrence qualifier = jocc.getNameForWhichThisIsAQualifier();
+          JavaNameOccurrence jqualifier = (JavaNameOccurrence) qualifier;
 
           if (qualifier != null) {
             String ruleMethodName = call.getRuleMethodName();
@@ -30,7 +33,7 @@ public class BlacklistMethodHelper {
             if (!isArray && qualifier.getImage().equals(ruleMethodName)) {
               Integer argumentCount = call.getArgumentCount();
 
-              if (argumentCount == null || argumentCount == qualifier.getArgumentCount()) {
+              if (argumentCount == null || argumentCount == jqualifier.getArgumentCount()) {
 
                 if(affectedClasses.isEmpty()){
                   markViolation(rule, data, occ.getLocation(), call);
@@ -54,7 +57,10 @@ public class BlacklistMethodHelper {
   }
 
   private static void markViolation(AbstractJavaRule rule, Object data, Node location, BlacklistedCall call) {
-    rule.addViolationWithMessage(data, location, "Suggested Alternative: " + call.getAlternativeMethod());
+    rule.addViolationWithMessage(
+        data,
+        location,
+        rule.getMessage() + " Suggested alternative: " + call.getAlternativeMethod());
   }
 
   public static void setContext(String methodProp, String classProp, RuleContext ctx, AbstractJavaRule rule) {
