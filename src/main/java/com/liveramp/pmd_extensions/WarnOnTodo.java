@@ -30,7 +30,7 @@ public class WarnOnTodo extends AbstractCommentRule {
       for (String todoString : todoStrings) {
         if (commentString.toLowerCase().contains(todoString)) {
           if (getProperty(REPORT_INDIVIDUALLY)) {
-            addViolationWithMessage(data, unit, "Fix or remove TODO: \"" + commentString+"\"", comment.getBeginLine(), comment.getEndLine());
+            addViolationWithMessage(data, unit, "Fix or remove TODO: \"" + commentString+"\"".replaceAll("([\\{\\}])", "\\\\$0"), comment.getBeginLine(), comment.getEndLine());
           }
           numTodos++;
         }
