@@ -26,7 +26,7 @@ public class BlacklistLossyIncrementCast extends AbstractJavaRule {
       .put("byte", 8)
       .get();
 
-  private static final Set<String> LOSSY_ASSIGNMENTS = Sets.newHashSet("+=", "-=");
+  private static final Set<String> LOSSY_ASSIGNMENTS = Sets.newHashSet("+=", "-=", "*=");
 
   @Override
   public Object visit(ASTStatementExpression node, Object data) {
