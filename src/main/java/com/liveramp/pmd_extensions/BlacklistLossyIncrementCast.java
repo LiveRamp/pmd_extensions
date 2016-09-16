@@ -1,7 +1,9 @@
 package com.liveramp.pmd_extensions;
 
 import java.util.Map;
+import java.util.Set;
 
+import com.google.common.collect.Sets;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -24,13 +26,15 @@ public class BlacklistLossyIncrementCast extends AbstractJavaRule {
       .put("byte", 8)
       .get();
 
+  private static final Set<String> LOSSY_ASSIGNMENTS = Sets.newHashSet("+=", "-=");
+
   @Override
   public Object visit(ASTStatementExpression node, Object data) {
 
     if (node.jjtGetNumChildren() == 3) {
       Node assignment = node.jjtGetChild(1);
 
-      if (assignment.getImage().equals("+=")) {
+      if (LOSSY_ASSIGNMENTS.contains(assignment.getImage())) {
 
         String lhsType = getVariableType(node.jjtGetChild(0));
         String rhsType = getVariableType(node.jjtGetChild(2).jjtGetChild(0));
