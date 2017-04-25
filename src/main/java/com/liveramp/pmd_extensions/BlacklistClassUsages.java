@@ -1,13 +1,11 @@
 package com.liveramp.pmd_extensions;
 
-import com.google.common.collect.Lists;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-
-import java.util.List;
 
 /**
  * Prevent a class from being instantiated or imported.  See example usage in example_ruleset.xml
@@ -16,13 +14,13 @@ import java.util.List;
  */
 public class BlacklistClassUsages extends AbstractJavaRule {
 
-  private static final StringMultiProperty LIST_PROPERTY =
-          new StringMultiProperty(
+  private static final PropertyDescriptor<String[]> LIST_PROPERTY =
+          new WhitespaceStrippingStringDescriptor(new StringMultiProperty(
                   "BlacklistClassUsages.BlacklistedClasses",
                   "List of classes to blacklist",
                   new String[]{},
                   0,
-                  ',');
+                  ','));
 
 
   public BlacklistClassUsages(){
