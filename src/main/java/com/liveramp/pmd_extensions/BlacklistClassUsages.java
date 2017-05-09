@@ -1,14 +1,11 @@
 package com.liveramp.pmd_extensions;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 /**
  * Prevent a class from being instantiated or imported.  See example usage in example_ruleset.xml
@@ -16,27 +13,18 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  * TODO prevent target from being used statically fully qualified
  */
 public class BlacklistClassUsages extends AbstractJavaRule {
-  private static final String LIST_NAME = "BlacklistClassUsages.BlacklistedClasses";
+
+  private static final PropertyDescriptor<String[]> LIST_PROPERTY =
+          new WhitespaceStrippingStringDescriptor(new StringMultiProperty(
+                  "BlacklistClassUsages.BlacklistedClasses",
+                  "List of classes to blacklist",
+                  new String[]{},
+                  0,
+                  ','));
+
 
   public BlacklistClassUsages(){
-    definePropertyDescriptor(new StringProperty(LIST_NAME, "List of classes to blacklist", "", 0));
-  }
-
-  @Override
-  public void start(RuleContext ctx) {
-    List<String> blacklistedClasses = Lists.newArrayList();
-    Object prop = getProperty(getPropertyDescriptor(LIST_NAME));
-    for (String className : prop.toString().split(",")) {
-      blacklistedClasses.add(className.trim());
-    }
-    ctx.setAttribute(LIST_NAME, blacklistedClasses);
-
-    super.start(ctx);
-  }
-
-  private static List<String> getFromContext(Object data){
-    RuleContext ctx = (RuleContext)data;
-    return (List<String>)ctx.getAttribute(LIST_NAME);
+    definePropertyDescriptor(LIST_PROPERTY);
   }
 
   /**
@@ -46,7 +34,7 @@ public class BlacklistClassUsages extends AbstractJavaRule {
   public Object visit(ASTImportDeclaration node, Object data) {
 
     String img = node.jjtGetChild(0).getImage();
-    for (String blacklistedClass : getFromContext(data)) {
+    for (String blacklistedClass : getProperty(LIST_PROPERTY)) {
       if (img.startsWith(blacklistedClass)) {
         addViolation(data, node);
       }
@@ -66,7 +54,7 @@ public class BlacklistClassUsages extends AbstractJavaRule {
 
     }
 
-    for (String blockedClass : getFromContext(data)) {
+    for (String blockedClass : getProperty(LIST_PROPERTY)) {
       if (PmdHelper.isSubclass((ASTClassOrInterfaceType) node.jjtGetChild(0), blockedClass)){
         addViolation(data, node);
       }
