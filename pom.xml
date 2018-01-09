@@ -107,19 +107,12 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
-            </configuration>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
+        <version>3.0.0</version>
+        <configuration>
+          <doclint>none</doclint>
+        </configuration>
       </plugin>
 
     </plugins>
