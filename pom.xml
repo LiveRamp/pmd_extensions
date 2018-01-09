@@ -15,6 +15,14 @@
     <gpg.passphrase>""</gpg.passphrase>
   </properties>
 
+  <scm>
+    <connection>scm:git:git@github.com:LiveRamp/pmd_extensions.git</connection>
+    <url>scm:git:git@github.com:LiveRamp/pmd_extensions.git</url>
+    <developerConnection>scm:git:git@github.com:LiveRamp/pmd_extensions.git</developerConnection>
+    <tag>pom-common-1.1</tag>
+  </scm>
+
+
   <description>pmd_extensions contains custom, extensible PMD rules</description>
 
   <developers>
