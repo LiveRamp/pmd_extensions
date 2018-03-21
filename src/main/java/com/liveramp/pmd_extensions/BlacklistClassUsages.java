@@ -36,7 +36,7 @@ public class BlacklistClassUsages extends AbstractJavaRule {
     String img = node.jjtGetChild(0).getImage();
     for (String blacklistedClass : getProperty(LIST_PROPERTY)) {
       if (img.startsWith(blacklistedClass)) {
-        addViolation(data, node);
+        addViolation(data, node, blacklistedClass);
       }
     }
 

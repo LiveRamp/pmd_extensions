@@ -47,7 +47,7 @@ public class BlacklistedStringLiterals extends AbstractJavaRule {
 
         for (String literal : getFromContext(data)) {
           if(imgStr.equals(literal)){
-            addViolation(data, node);
+            addViolation(data, node, literal);
           }
         }
       }
