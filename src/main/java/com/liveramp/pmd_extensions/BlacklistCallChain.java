@@ -80,11 +80,11 @@ public class BlacklistCallChain extends AbstractJavaRule {
 
     }else if(node instanceof ASTPrimarySuffix){
       if(node.getImage() != null) {
-        return Arrays.asList(node.getImage().split("\\."));
+        return new ArrayList<>(Arrays.asList(node.getImage().split("\\.")));
       }
     }else if(node instanceof ASTName){
       if(node.getImage() != null) {
-        return Arrays.asList(node.getImage().split("\\."));
+        return new ArrayList<>(Arrays.asList(node.getImage().split("\\.")));
       }
     }
     return new ArrayList<>();
