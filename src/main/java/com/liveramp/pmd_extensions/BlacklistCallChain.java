@@ -1,11 +1,11 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -28,7 +28,7 @@ public class BlacklistCallChain extends AbstractJavaRule {
 
   @Override
   public void start(RuleContext ctx) {
-    Set<List<String>> chains = Sets.newHashSet();
+    Set<List<String>> chains = new HashSet<>();
     Object prop = getProperty(getPropertyDescriptor(CALL_CHAIN));
     for (String reference : prop.toString().split(",")) {
       chains.add(Arrays.asList(reference.trim().split("\\.")));
@@ -49,7 +49,7 @@ public class BlacklistCallChain extends AbstractJavaRule {
     Set<List<String>> badCalls = getCallsFromContext(data);
     List<String> affectedClasses = BlacklistMethodHelper.getClassesFromContext(data, CLASS_LIST);
 
-    List<String> parts = Lists.newArrayList();
+    List<String> parts = new ArrayList<>();
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       List<String> image = image(node.jjtGetChild(i));
       if(!image.isEmpty()){
@@ -72,7 +72,7 @@ public class BlacklistCallChain extends AbstractJavaRule {
     if(node instanceof ASTPrimaryPrefix){
       ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node;
 
-      List<String> results = Lists.newArrayList();
+      List<String> results = new ArrayList<>();
       for (int i = 0; i < prefix.jjtGetNumChildren(); i++) {
         results.addAll(image(prefix.jjtGetChild(i)));
       }
@@ -80,14 +80,14 @@ public class BlacklistCallChain extends AbstractJavaRule {
 
     }else if(node instanceof ASTPrimarySuffix){
       if(node.getImage() != null) {
-        return Lists.newArrayList(node.getImage().split("\\."));
+        return Arrays.asList(node.getImage().split("\\."));
       }
     }else if(node instanceof ASTName){
       if(node.getImage() != null) {
-        return Lists.newArrayList(node.getImage().split("\\."));
+        return Arrays.asList(node.getImage().split("\\."));
       }
     }
-    return Lists.newArrayList();
+    return new ArrayList<>();
   }
 
 }

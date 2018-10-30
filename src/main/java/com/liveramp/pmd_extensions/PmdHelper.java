@@ -1,12 +1,12 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -35,18 +35,16 @@ public class PmdHelper {
       return true;
     }
 
-    Collection<String> implementors = Collections2.transform(Arrays.asList(type.getInterfaces()), new Function<Class, String>() {
-      @Override
-      public String apply(Class aClass) {
-        return aClass.getName();
-      }
-    });
+    Collection<String> implementors = Stream.of(type.getInterfaces())
+        .map(Class::getName)
+        .collect(Collectors.toList());
 
     if (implementors.contains(clazz)) {
       return true;
     }
 
-    List<Class<?>> supers = Lists.<Class<?>>newArrayList(type.getSuperclass());
+    List<Class<?>> supers = new ArrayList<>();
+    supers.add(type.getSuperclass());
     supers.addAll(Arrays.<Class<?>>asList(type.getInterfaces()));
 
     for (Class<?> superC : supers) {

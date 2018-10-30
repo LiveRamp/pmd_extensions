@@ -1,9 +1,9 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -66,7 +66,7 @@ public class BlacklistMethodHelper {
   public static void setContext(String methodProp, String classProp, RuleContext ctx, AbstractJavaRule rule) {
 
     if(methodProp != null) {
-      List<BlacklistedCall> blockedCalls = Lists.newArrayList();
+      List<BlacklistedCall> blockedCalls = new ArrayList<>();
       Object prop = rule.getProperty(rule.getPropertyDescriptor(methodProp));
       for (String reference : prop.toString().split(",")) {
         blockedCalls.add(parseRef(reference.trim()));
@@ -75,7 +75,7 @@ public class BlacklistMethodHelper {
     }
 
     if(classProp != null) {
-      List<String> blacklistedClasses = Lists.newArrayList();
+      List<String> blacklistedClasses = new ArrayList<>();
       Object classes = rule.getProperty(rule.getPropertyDescriptor(classProp));
       if (classes != null) {
         for (String className : classes.toString().split(",")) {
