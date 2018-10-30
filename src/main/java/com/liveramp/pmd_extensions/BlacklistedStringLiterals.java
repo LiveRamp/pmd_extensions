@@ -1,8 +1,8 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -17,7 +17,7 @@ public class BlacklistedStringLiterals extends AbstractJavaRule {
 
   @Override
   public void start(RuleContext ctx) {
-    List<String> blacklistedClasses = Lists.newArrayList();
+    List<String> blacklistedClasses = new ArrayList<>();
     Object prop = getProperty(getPropertyDescriptor(LIST_NAME));
     for (String className : prop.toString().split(",")) {
       blacklistedClasses.add(className.trim());

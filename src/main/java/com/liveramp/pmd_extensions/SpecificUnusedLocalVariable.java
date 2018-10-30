@@ -1,9 +1,9 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -26,7 +26,7 @@ public class SpecificUnusedLocalVariable extends AbstractJavaRule {
 
   @Override
   public void start(RuleContext ctx) {
-    Set<String> classes = Sets.newHashSet();
+    Set<String> classes = new HashSet<>();
     Object prop = getProperty(getPropertyDescriptor(CLASS_LIST));
     for (String reference : prop.toString().split(",")) {
       classes.add(reference.trim());

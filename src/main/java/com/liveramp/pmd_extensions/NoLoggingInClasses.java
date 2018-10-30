@@ -1,9 +1,10 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -18,12 +19,12 @@ public class NoLoggingInClasses extends AbstractJavaRule {
   private static final String LIST_NAME = "NoLoggingInClasses.BlacklistedMethods";
   private static final String CLASS_LIST = "NoLoggingInClasses.ClassesToInspect";
 
-  private static final Set<String> LOG_IMAGES = Sets.newHashSet(
+  private static final Set<String> LOG_IMAGES = new HashSet<>(Arrays.asList(
       "System.out.println",
       "System.out.print",
       "System.err.println",
       "System.err.print"
-  );
+  ));
 
   public NoLoggingInClasses(){
     definePropertyDescriptor(new StringProperty(LIST_NAME, "List of methods to blacklist", "", 0));
