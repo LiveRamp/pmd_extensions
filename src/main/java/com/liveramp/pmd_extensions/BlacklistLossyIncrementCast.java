@@ -17,16 +17,16 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
-import com.liveramp.commons.collections.map.MapBuilder;
-
 public class BlacklistLossyIncrementCast extends AbstractJavaRule {
 
-  private static final Map<String, Integer> TYPE_TO_BITS = new MapBuilder<String, Integer>()
-      .put("long", 64)
-      .put("int", 32)
-      .put("short", 16)
-      .put("byte", 8)
-      .get();
+  private static final Map<String, Integer> TYPE_TO_BITS = new HashMap<>();
+
+  static {
+    TYPE_TO_BITS.put("long", 64);
+    TYPE_TO_BITS.put("int", 32);
+    TYPE_TO_BITS.put("short", 16);
+    TYPE_TO_BITS.put("byte", 8);
+  }
 
   private static final Set<String> LOSSY_ASSIGNMENTS = new HashSet<>(Arrays.asList("+=", "-=", "*=", "^=", "|=", "/=", "%=", "&="));
 
