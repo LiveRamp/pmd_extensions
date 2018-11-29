@@ -1,13 +1,14 @@
 package com.liveramp.pmd_extensions;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 /**
  * Fail any build which uses certain methods on particular classes.  Example configuration in rule set:
@@ -21,23 +22,27 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  *   is banned
  */
 public class BlacklistMethods extends AbstractJavaRule {
-  private static final String LIST_NAME = "BlacklistMethods.BlacklistedMethods";
+  private static final PropertyDescriptor<String[]> METHODS_LIST_DESCRIPTOR =
+      new WhitespaceStrippingStringDescriptor(
+          new StringMultiProperty(
+              "BlacklistMethods.BlacklistedMethods",
+              "List of methods to blacklist",
+              new String[]{},
+              0,
+              ','));
+
+  private final BlacklistedCallFactory blacklistedCallFactory = new BlacklistedCallFactory();
 
   public BlacklistMethods() {
-    definePropertyDescriptor(new StringProperty(LIST_NAME, "List of methods to blacklist", "", 0));
-  }
-
-
-  @Override
-  public void start(RuleContext ctx) {
-    BlacklistMethodHelper.setContext(LIST_NAME, null, ctx, this);
-    super.start(ctx);
+    definePropertyDescriptor(METHODS_LIST_DESCRIPTOR);
   }
 
   @Override
   public Object visit(ASTVariableDeclaratorId node, Object data) {
-    BlacklistMethodHelper.checkForMethods(node, data,
-        BlacklistMethodHelper.getCallsFromContext(data, LIST_NAME),
+    BlacklistMethodHelper.checkForMethods(
+        node,
+        data,
+        getBlacklistedCalls(),
         Collections.<String>emptyList(),
         this
     );
@@ -49,13 +54,24 @@ public class BlacklistMethods extends AbstractJavaRule {
    */
   @Override
   public Object visit(ASTPrimaryPrefix node, Object data) {
-    List<BlacklistedCall> blockedCalls = BlacklistMethodHelper.getCallsFromContext(data, LIST_NAME);
-
-    if (BlacklistMethodHelper.checkStaticMethods(node, data, blockedCalls, Collections.<String>emptyList(), this)) {
+    if (BlacklistMethodHelper.checkStaticMethods(
+        node,
+        data,
+        getBlacklistedCalls(),
+        Collections.<String>emptyList(),
+        this)) {
       return super.visit(node, data);
     }
 
     return super.visit(node, data);
+  }
+
+  private List<BlacklistedCall> getBlacklistedCalls() {
+    List<BlacklistedCall> blacklistedCalls = new ArrayList<>();
+    for (String blackListedCallsDeclaration : getProperty(METHODS_LIST_DESCRIPTOR)) {
+      blacklistedCalls.add(blacklistedCallFactory.getBlacklistedCall(blackListedCallsDeclaration));
+    }
+    return blacklistedCalls;
   }
 
 }

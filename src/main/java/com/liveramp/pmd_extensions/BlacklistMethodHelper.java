@@ -1,7 +1,6 @@
 package com.liveramp.pmd_extensions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
@@ -69,7 +68,7 @@ public class BlacklistMethodHelper {
       List<BlacklistedCall> blockedCalls = new ArrayList<>();
       Object prop = rule.getProperty(rule.getPropertyDescriptor(methodProp));
       for (String reference : prop.toString().split(",")) {
-        blockedCalls.add(parseRef(reference.trim()));
+        blockedCalls.add(BlacklistedCallFactory.from(reference.trim()));
       }
       ctx.setAttribute(methodProp, blockedCalls);
     }
@@ -85,23 +84,6 @@ public class BlacklistMethodHelper {
       ctx.setAttribute(classProp, blacklistedClasses);
     }
 
-  }
-
-  private static BlacklistedCall parseRef(String s){
-    String[] origAlt = s.split(";");
-
-    if (origAlt.length != 2) {
-      throw new RuntimeException("Blacklisting " + s + ": Must supply alternative");
-    }
-
-    String[] parts = origAlt[0].split(":");
-    if (parts.length == 2){
-      return new BlacklistedCall(parts[0], parts[1], origAlt[1]);
-    }
-    if (parts.length == 3){
-      return new BlacklistedCall(parts[0], parts[1], Integer.parseInt(parts[2]), origAlt[1]);
-    }
-    throw new RuntimeException("Cannot parse method reference: "+ origAlt[0] +". Parts: " + Arrays.toString(parts));
   }
 
   public static boolean checkStaticMethods(ASTPrimaryPrefix node, Object data, List<BlacklistedCall> blockedCalls, List<String> affectedClasses, AbstractJavaRule rule) {
