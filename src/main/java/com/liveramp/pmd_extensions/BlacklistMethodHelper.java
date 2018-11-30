@@ -105,9 +105,7 @@ public class BlacklistMethodHelper {
           if (image.equals(blacklistedCall.getImportedStaticImage())
               || image.equals(blacklistedCall.getFullStaticImage())) {
             markViolation(rule, data, node, blacklistedCall);
-            if(affectedClasses.isEmpty()){
-              markViolation(rule, data, node, blacklistedCall);
-            }else{
+            if (!affectedClasses.isEmpty()) {
               PmdHelper.checkParentClasses(node, data, affectedClasses, node.jjtGetParent(), rule);
             }
           }
