@@ -23,12 +23,18 @@ public class PmdHelper {
     return parts[parts.length - 1];
   }
 
+  private static String getClassFromStaticMethodReference(String image) {
+    return image.split("\\.")[0];
+  }
+
   public static boolean isSubclass(TypeNode n, String clazz) {
 
     Class type = n.getType();
+
     if (type == null) {
       String image = ((Node)n).getImage();
-      return simpleName(clazz).equals(image) || clazz.equals(image);
+      return simpleName(clazz).equals(image) || clazz.equals(image)
+          || simpleName(clazz).equals(getClassFromStaticMethodReference(image));
     }
 
     if (type.getName().equals(clazz)) {
