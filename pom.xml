@@ -43,33 +43,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>liveramp-repositories</id>
-      <name>Liveramp Repositories</name>
-      <url>http://repository.liveramp.com/artifactory/liveramp-repositories</url>
-    </repository>
-  </repositories>
-
   <pluginRepositories>
     <pluginRepository>
       <id>sonatype-releases</id>
       <url>http://oss.sonatype.org/content/repositories/releases</url>
     </pluginRepository>
   </pluginRepositories>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>repository.liveramp.com</id>
-      <name>repository.liveramp.com-snapshots</name>
-      <url>http://repository.liveramp.com/artifactory/libs-snapshot-local</url>
-    </snapshotRepository>
-    <repository>
-      <id>repository.liveramp.com</id>
-      <name>repository.liveramp.com-releases</name>
-      <url>http://repository.liveramp.com/artifactory/libs-release-local</url>
-    </repository>
-  </distributionManagement>
 
   <dependencies>
     <dependency>
